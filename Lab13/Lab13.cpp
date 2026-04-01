@@ -6,7 +6,7 @@
 using namespace std;
 
 void gaussMethod(double** matrix, int M, int N) {
-    
+
     for (int k = 0; k < min(M, N); k++) { // проходимся по столбцам
 
         // находим максимальный элемент в столбце
@@ -42,6 +42,41 @@ void gaussMethod(double** matrix, int M, int N) {
                 }
             }
         }
+    }
+}
+
+void analyzeResult(double** matrix, int M, int N) {
+    int nonZeroRows = 0;
+
+    for (int i = 0; i < M; i++) {
+        bool allZeros = true;
+        for (int j = 0; j < N; j++) {
+            if (abs(matrix[i][j]) > 1e-9) {
+                allZeros = false;
+                break;
+            }
+        }
+        if (allZeros) {
+            if (abs(matrix[i][N]) > 1e-9) {
+                cout << "Inconsistent matrix" << endl;
+                return;
+            }  
+        }
+        else {
+            nonZeroRows++;
+        }
+    }
+
+    if (nonZeroRows < N) {
+        cout << "Set of decisions" << endl;
+        return;
+    }
+
+    for (int i = 0; i < N; i++) {
+        double answer = matrix[i][N];
+        if (answer < 1e-9) answer = 0.0;
+
+        cout << "x" << i + 1 << "=" << setprecision(3) << answer << " ";
     }
 }
 
@@ -89,6 +124,8 @@ int main() {
         }
         cout << endl;
     }
+
+    analyzeResult(matrix, M, N);
 
 	for (int i = 0; i < M; i++) { // очистка памяти
 		delete[] matrix[i];
