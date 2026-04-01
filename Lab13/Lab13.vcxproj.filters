@@ -23,5 +23,6 @@
     <Text Include="..\..\..\..\Downloads\tests.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="output.txt" />
   </ItemGroup>
 </Project>
