@@ -66,13 +66,66 @@ void analyzeResult(double** matrix, int M, int N, ostream& out) {
     }
 
     if (nonZeroRows < N) {
-        // выводим свободные переменные
-        for (int i = 0; i < N; i++) {
-            if (i >= M || abs(matrix[i][i]) < 1e-9) {
-                out << "x" << i + 1 << " is free\n";
+
+        bool* isFree = new bool[N]; // массив для свободных переменных
+        for (int j = 0; j < N; j++) isFree[j] = true; // изначально все свободные
+
+        int* pivotCol = new int[M]; // массив для базисных переменныз
+        for (int i = 0; i < M; i++) pivotCol[i] = -1;
+
+        // ищем базисные переменные (первая ненулевая в каждой строке)
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (abs(matrix[i][j]) > 1e-9) {
+                    pivotCol[i] = j;
+                    isFree[j] = false;
+                    break;
+                }
             }
         }
-        out << "Set of decisions" << endl;
+
+        double* ans = new double[N];
+
+        bool firstFree = true;
+        for (int j = 0; j < N; j++) {
+            if (isFree[j]) {
+                if (!firstFree) out << ", ";
+                out << "x" << j + 1;
+                firstFree = false;
+                ans[j] = 1.0; // присваиваем 1 свободным переменным
+            }
+            else {
+                ans[j] = 0.0;
+            }
+        }
+        if (!firstFree) out << " are free\n";
+
+        // считаем базисные переменные
+        for (int i = 0; i < M; i++) {
+            int p = pivotCol[i];
+            if (p != -1) {
+                double sum = 0;
+                for (int j = 0; j < N; j++) {
+                    if (j != p) {
+                        sum += matrix[i][j] * ans[j];
+                    }
+                }
+                ans[p] = matrix[i][N] - sum;
+            }
+        }
+
+        for (int j = 0; j < N; j++) {
+            if (abs(ans[j]) < 1e-9) ans[j] = 0.0;
+            out << "x" << j + 1 << "=" << fixed << setprecision(3) << ans[j];
+            if (j < N - 1) out << "; ";
+        }
+        out << endl;
+
+        // Очищаем память
+        delete[] isFree;
+        delete[] pivotCol;
+        delete[] ans;
+
         return;
     }
 
@@ -144,8 +197,8 @@ int main() {
 
     cout << "\nРезультат:" << endl;
     fout << "\nРезультат:" << endl;
-    analyzeResult(matrix, M, N, cout); 
-    analyzeResult(matrix, M, N, fout); 
+    analyzeResult(matrix, M, N, cout);
+    analyzeResult(matrix, M, N, fout);
 
     for (int i = 0; i < M; i++) { // очистка памяти
         delete[] matrix[i];
@@ -153,7 +206,7 @@ int main() {
     delete[] matrix;
 
     file.close(); // закрытие файлов
-    fout.close(); 
+    fout.close();
 
     return 0;
 }
