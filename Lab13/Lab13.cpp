@@ -5,6 +5,8 @@
 
 using namespace std;
 
+void solveTask3_1();
+
 void gaussMethod(double** matrix, int M, int N) {
     for (int k = 0; k < min(M, N); k++) { // проходимся по столбцам
         // находим максимальный элемент в столбце
@@ -199,6 +201,8 @@ int main() {
     fout << "\nРезультат:" << endl;
     analyzeResult(matrix, M, N, cout);
     analyzeResult(matrix, M, N, fout);
+
+    solveTask3_1();
 
     for (int i = 0; i < M; i++) { // очистка памяти
         delete[] matrix[i];
