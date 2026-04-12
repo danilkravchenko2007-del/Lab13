@@ -68,7 +68,6 @@ void analyzeResult(double** matrix, int M, int N, ostream& out) {
     }
 
     if (nonZeroRows < N) {
-
         bool* isFree = new bool[N]; // массив для свободных переменных
         for (int j = 0; j < N; j++) isFree[j] = true; // изначально все свободные
 
@@ -141,31 +140,31 @@ void analyzeResult(double** matrix, int M, int N, ostream& out) {
     out << endl;
 }
 
-int main() {
-    setlocale(LC_ALL, "Russian");
-
+void solveBaseTask() {
     ifstream file("C:\\Users\\danilka\\Downloads\\tests.txt");
     if (!file.is_open()) {
-        cout << "Ошибка открытия файла." << endl;
-        return 1;
+        cout << "Ошибка открытия файла tests.txt" << endl;
+        return;
     }
 
-    // создаем файл для записи
     ofstream fout("C:\\Users\\danilka\\source\\repos\\Lab13\\Lab13\\output.txt");
     if (!fout.is_open()) {
         cout << "Ошибка создания файла для записи." << endl;
-        return 1;
+        return;
     }
 
-    int M, N; // кол-во уравнений (M) и кол-во неизвестных (N)
-    file >> M >> N;
+    int M, N;
+    if (!(file >> M >> N)) {
+        cout << "Ошибка: Файл пуст или содержит текст вместо размерности матрицы (M N)!" << endl;
+        return;
+    }
 
-    double** matrix = new double* [M]; // выделяем память под матрицу
+    double** matrix = new double* [M];
     for (int i = 0; i < M; i++) {
         matrix[i] = new double[N + 1];
     }
 
-    for (int i = 0; i < M; i++) { // записываем данные из файла в наш двумерный массив
+    for (int i = 0; i < M; i++) {
         for (int j = 0; j <= N; j++) {
             file >> matrix[i][j];
         }
@@ -202,15 +201,37 @@ int main() {
     analyzeResult(matrix, M, N, cout);
     analyzeResult(matrix, M, N, fout);
 
-    solveTask3_1();
-
     for (int i = 0; i < M; i++) { // очистка памяти
         delete[] matrix[i];
     }
     delete[] matrix;
 
-    file.close(); // закрытие файлов
+    file.close();
     fout.close();
+}
+
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+
+    int choice;
+    cout << "=== ЛАБОРАТОРНАЯ РАБОТА: СИСТЕМЫ ЛИНЕЙНЫХ УРАВНЕНИЙ ===" << endl;
+    cout << "1. Решить базовую матрицу (ввод размерности и цифр из файла)" << endl;
+    cout << "2. Задание 17: Пересечение прямых (ввод текста уравнений + график)" << endl;
+    cout << "Выберите действие (1 или 2): ";
+    cin >> choice;
+
+    cout << "-------------------------------------------------------" << endl;
+
+    if (choice == 1) {
+        solveBaseTask();
+    }
+    else if (choice == 2) {
+        solveTask3_1();
+    }
+    else {
+        cout << "Ошибка: Неверный выбор!" << endl;
+    }
 
     return 0;
 }

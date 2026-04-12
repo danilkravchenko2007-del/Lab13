@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Lab13.cpp" />
     <ClCompile Include="task3-1.cpp" />
+    <ClCompile Include="task3-2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\..\Downloads\tests.txt" />
